@@ -1,0 +1,290 @@
+/*   --------------   DEFAULT STYLES RESET   --------------   */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style: none;
+  font-family: 'Inter', sans-serif;
+}
+/*   --------------   --------------   --------------   */
+
+
+$light-color: #f7f7f7;
+$light-hover-color: #e1e1e1;
+$dark-color: #393e46;
+$primary-color: #063d69;
+$secondary-color: #f6cd47;
+
+$error-color: #ec5555;
+$error-dense-color: #f5a5a5;
+
+$nav-height: 60px;
+
+/*   --------------   ROOT VARIABLES   --------------   */
+//:root {
+//  --light-color: #f7f7f7;
+//  --light-hover-color: #e1e1e1;
+//  --dark-color: #393e46;
+//  --primary-color: #063d69;
+//  --secondary-color: #f6cd47;
+//
+//  --error-color: #ec5555;
+//  --error-dense-color: #f5a5a5;
+//
+//  --nav-height: 60px;
+//}
+/*   --------------   --------------   --------------   */
+
+
+body {
+  background-color: $light-color;
+
+  * {
+    color: $dark-color;
+  }
+}
+
+
+header {
+  width: 100%;
+  height: $nav-height;
+  line-height: $nav-height;
+
+  background-color: $primary-color;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+
+  color: $light-color;
+}
+
+.wrap {
+  box-sizing: border-box;
+  height: 100%;
+  margin: 0 auto;
+  padding: 5% 0;
+  max-width: 1310px;
+  min-width: 970px;
+  position: relative;
+  width: 100%;
+}
+
+.input-section {
+  display: grid;
+  grid-template-columns: 100px 250px;
+  grid-auto-rows: 32px;
+  grid-row-gap: 1em;
+  margin: 20px 0;
+
+  label {
+    font-weight: bold;
+    line-height: 32px;
+  }
+
+  input {
+    text-align: center;
+    font-size: 16px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 1px solid $dark-color;
+
+    &:hover {
+      border-width: 2px;
+    }
+
+    &.error {
+      border: 2px solid $error-color;
+    }
+  }
+}
+
+.text-logo {
+  font-weight: bold;
+  font-size: 24px;
+  color: $light-color;
+
+  transition: 0.6s ease-out;
+
+  &:hover {
+    cursor: pointer;
+    font-size: 28px;
+    color: $secondary-color;
+  }
+}
+
+.button {
+  padding: 10px 20px;
+  background-color: $primary-color;
+  color: $light-color;
+  border: 3px solid $primary-color;
+  border-radius: 10px;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  margin-bottom: 15px;
+
+  transition: 0.5s ease-out;
+
+  &:hover {
+    cursor: pointer;
+    background-color: $secondary-color;
+    border: 3px solid $secondary-color;
+  }
+}
+
+.is-active {
+  background-color: $secondary-color;
+  border: 3px solid $secondary-color;
+}
+
+.hidden {
+  display: none;
+}
+
+#pagination {
+  display: flex;
+  justify-content: space-between;
+
+  .button {
+    margin-right: 15px;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    span {
+      font-size: 16px;
+      color: $light-color;
+      font-weight: bold;
+    }
+  }
+}
+
+
+/*   --------------   ERROR WINDOW   --------------   */
+.error-window {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  z-index: 99;
+
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  display: none;
+}
+
+.error-window-header {
+  width: 100%;
+  height: 40px;
+  background-color: $error-color;
+  display: flex;
+  justify-content: space-between;
+
+  padding-left: 20px;
+
+  border-radius: 10px 10px 0 0;
+
+  p {
+    color: $light-color;
+    font-weight: bold;
+    line-height: 40px;
+  }
+}
+
+.error-window-body {
+  background-color: $error-dense-color;
+  text-align: center;
+
+  border-radius: 0 0 10px 10px;
+
+  padding: 10px 20px;
+}
+
+.close {
+  opacity: 0.5;
+
+  background-color: transparent;
+  border: 0;
+
+  transition: 0.4s;
+
+  &:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  &:before, &:after {
+    margin-right: 10px;
+    margin-top: 10px;
+
+    position: absolute;
+    top: 4px;
+    right: 9px;
+    content: '';
+    height: 12px;
+    width: 2px;
+    background-color: $light-color;
+  }
+
+  &:before {
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    transform: rotate(-45deg);
+  }
+}
+
+/*   --------------   --------------   --------------   */
+
+/*   --------------   TABLE   --------------   */
+
+#weather-result-table {
+  display: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30px 0;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+  th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  tr {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+
+    &:last-child td {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: $light-hover-color;
+    }
+  }
+}
+
+/*   --------------   --------------   --------------   */

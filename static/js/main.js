@@ -6,10 +6,42 @@ document.getElementById('get-weather').onclick = () => {
     weatherRequest.onreadystatechange = function() {
         if (this.readyState != 4) return;
 
+        const responseData = JSON.parse(this.responseText);
+
         if (this.status === 200) {
-            const responseData = JSON.parse(this.responseText);
+            document.getElementById('weather-result-table').style.display = 'table';
             updateWeatherTable(responseData);
             updatePagination(responseData);
+        } else {
+            errorWindowMessages = document.querySelectorAll('#error-window-body p');
+            errorWindowMessages.forEach(function (element) {
+                element.remove();
+            });
+
+            errorWindowBody = document.getElementById('error-window-body');
+            errorMessage = document.createElement('p');
+            errorMessage.textContent = responseData.message;
+            errorWindowBody.appendChild(errorMessage);
+
+            var errowWindow = document.getElementById('error-window');
+            errowWindow.style.display = 'block';
+
+            var inputCity = document.getElementById('input-city');
+            var inputDateFrom = document.getElementById('input-date-from');
+            var inputDateTo = document.getElementById('input-date-to');
+
+            if (inputCity.value === '' || responseData.message === 'No matching location found.') {
+                inputCity.classList.add('error');
+            }
+
+            if (inputDateFrom.value === '') {
+                inputDateFrom.classList.add('error');
+            }
+
+            if (responseData.message === 'dateTo cannot be earlier than dateFrom') {
+                inputDateFrom.classList.add('error');
+                inputDateTo.classList.add('error');
+            }
         }
 
     };
@@ -78,7 +110,7 @@ function updatePagination(data) {
     const doubleArrowLeft = document.createElement('span');
 
     doubleArrowLeft.classList.add('material-icons');
-    doubleArrowLeft.textContent = 'chevron_left';
+    doubleArrowLeft.textContent = 'keyboard_double_arrow_left';
     firstButton.appendChild(doubleArrowLeft);
     firstButton.classList.add('button');
     firstButton.addEventListener('click', function () {
@@ -118,6 +150,7 @@ function updatePagination(data) {
         pageButton.classList.add('button');
         pageButton.addEventListener('click', function () {
             currentPage = i;
+
             updateWeatherTable(data);
             highlightActivePage();
             hideFarButtons();
@@ -148,7 +181,7 @@ function updatePagination(data) {
     const lastButton = document.createElement('button');
     const doubleArrowRight = document.createElement('span');
     doubleArrowRight.classList.add('material-icons');
-    doubleArrowRight.textContent = 'keyboard_double_arrow_left';
+    doubleArrowRight.textContent = 'keyboard_double_arrow_right';
     lastButton.appendChild(doubleArrowRight);
     lastButton.classList.add('button');
     lastButton.addEventListener('click', function () {
@@ -184,19 +217,47 @@ function hideFarButtons() {
     let buttonsN = paginationButtons.length;
 
     paginationButtons.forEach((button, index) => {
-        if (index > 2 && index < buttonsN - 3) {
-            if (index < currentPage - 3 || index > currentPage + 3) {
+        if (index > 1 && index < buttonsN - 2) {
+            if (index < currentPage - 1 || index > currentPage + 3) {
                 button.classList.add('hidden');
             } else {
                 button.classList.remove('hidden');
             }
 
-            if (index === currentPage - 3 || index === currentPage + 3) {
+            if (index === currentPage - 1 || index === currentPage + 3) {
                 button.textContent = '...';
             } else {
-                button.textContent = index.toString();
+                button.textContent = (index - 1).toString();
             }
         }
     });
 
 }
+
+function closeErrorWindow() {
+    var errowWindow = document.getElementById('error-window');
+    errowWindow.style.display = 'none';
+
+    errorWindowMessages = document.querySelectorAll('#error-window-body p');
+    errorWindowMessages.forEach(function (element) {
+        element.remove();
+    });
+}
+
+document.getElementById('close-error-window').addEventListener('click', closeErrorWindow);
+
+var inputCity = document.getElementById('input-city');
+var inputDateFrom = document.getElementById('input-date-from');
+var inputDateTo = document.getElementById('input-date-to');
+
+inputCity.addEventListener('focus', function () {
+    inputCity.classList.remove('error');
+});
+
+inputDateFrom.addEventListener('focus', function () {
+    inputDateFrom.classList.remove('error');
+});
+
+inputDateTo.addEventListener('focus', function () {
+    inputDateTo.classList.remove('error');
+});
