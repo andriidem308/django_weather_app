@@ -72,7 +72,6 @@ function updateWeatherTable(data) {
 function addRow(tableBody, rowData) {
     const row = tableBody.insertRow();
 
-    // Create cells and fill them with data
     const dateCell = row.insertCell(0);
     dateCell.textContent = rowData.day;
 
@@ -98,10 +97,8 @@ function addRow(tableBody, rowData) {
 function updatePagination(data) {
     const totalPages = Math.ceil(data.data.results.length / pageSize);
 
-    // Assuming you have some element with an ID 'pagination' to display pagination controls
     const paginationElement = document.getElementById('pagination');
 
-    // Clear existing pagination controls
     paginationElement.innerHTML = '';
 
     const leftButtons = document.createElement('div');
