@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}Weather App{% endblock %}
+
+{% block content %}
+    <div class="input-container">
+        <label for="input-city">City:</label>
+        <input type="text" id="input-city">
+    </div>
+    <div class="input-container">
+        <label for="input-date-from">Date from:</label>
+        <input type="date" id="input-date-from"><br>
+    </div>
+    <div class="input-container">
+        <label for="input-date-to">Date to:</label>
+        <input type="date" id="input-date-to">
+    </div>
+
+    <button class="button" id="get-weather">Get Weather</button>
+
+    <p id="city-description">Found city: <span id="city-span"></span></p>
+        <table id="weather-result-table">
+            <thead>
+            <tr>
+                <th>Day</th>
+                <th>Max Temperature</th>
+                <th>Min Temperature</th>
+                <th>Avg Temperature</th>
+                <th>Avg Humidity</th>
+                <th>Sunrise</th>
+                <th>Sunset</th>
+            </tr>
+            </thead>
+            <tbody id="weather-table-data">
+
+            </tbody>
+        </table>
+        <div id="pagination"></div>
+
+
+    <!-- EXAMPLE -->
+
+{#    <table id="weather-result-table">#}
+{#        <thead>#}
+{#        <tr>#}
+{#            <th>Day</th>#}
+{#            <th>Max Temperature</th>#}
+{#            <th>Min Temperature</th>#}
+{#            <th>Avg Temperature</th>#}
+{#            <th>Avg Humidity</th>#}
+{#            <th>Sunrise</th>#}
+{#            <th>Sunset</th>#}
+{#        </tr>#}
+{#        </thead>#}
+{#        <tbody id="weather-table-data">#}
+{#        <tr>#}
+{#            <td>2023-10-24</td>#}
+{#            <td>14.9</td>#}
+{#            <td>8.2</td>#}
+{#            <td>11.3</td>#}
+{#            <td>65</td>#}
+{#            <td>07:35 AM</td>#}
+{#            <td>05:49 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-25</td>#}
+{#            <td>11.8</td>#}
+{#            <td>9.5</td>#}
+{#            <td>10.3</td>#}
+{#            <td>85</td>#}
+{#            <td>07:36 AM</td>#}
+{#            <td>05:47 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-26</td>#}
+{#            <td>15</td>#}
+{#            <td>11.7</td>#}
+{#            <td>13</td>#}
+{#            <td>80</td>#}
+{#            <td>07:38 AM</td>#}
+{#            <td>05:45 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-27</td>#}
+{#            <td>15.4</td>#}
+{#            <td>10.6</td>#}
+{#            <td>12.9</td>#}
+{#            <td>83</td>#}
+{#            <td>07:40 AM</td>#}
+{#            <td>05:44 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-28</td>#}
+{#            <td>14.4</td>#}
+{#            <td>9.4</td>#}
+{#            <td>11.5</td>#}
+{#            <td>81</td>#}
+{#            <td>07:41 AM</td>#}
+{#            <td>05:42 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-29</td>#}
+{#            <td>13.1</td>#}
+{#            <td>7.8</td>#}
+{#            <td>10.2</td>#}
+{#            <td>79</td>#}
+{#            <td>07:43 AM</td>#}
+{#            <td>05:40 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-30</td>#}
+{#            <td>17.7</td>#}
+{#            <td>10.4</td>#}
+{#            <td>13.6</td>#}
+{#            <td>61</td>#}
+{#            <td>06:44 AM</td>#}
+{#            <td>04:38 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-10-31</td>#}
+{#            <td>20</td>#}
+{#            <td>11.8</td>#}
+{#            <td>15.7</td>#}
+{#            <td>57</td>#}
+{#            <td>06:46 AM</td>#}
+{#            <td>04:36 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-11-01</td>#}
+{#            <td>14.7</td>#}
+{#            <td>9.1</td>#}
+{#            <td>12.3</td>#}
+{#            <td>82</td>#}
+{#            <td>06:48 AM</td>#}
+{#            <td>04:34 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-11-02</td>#}
+{#            <td>13.2</td>#}
+{#            <td>6.2</td>#}
+{#            <td>9.3</td>#}
+{#            <td>67</td>#}
+{#            <td>06:50 AM</td>#}
+{#            <td>04:32 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-11-03</td>#}
+{#            <td>13</td>#}
+{#            <td>6.1</td>#}
+{#            <td>9</td>#}
+{#            <td>70</td>#}
+{#            <td>06:51 AM</td>#}
+{#            <td>04:31 PM</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td>2023-11-04</td>#}
+{#            <td>15.7</td>#}
+{#            <td>7.9</td>#}
+{#            <td>11.2</td>#}
+{#            <td>91</td>#}
+{#            <td>06:53 AM</td>#}
+{#            <td>04:29 PM</td>#}
+{#        </tr>#}
+{#        </tbody>#}
+{#    </table>#}
+{#    <div id="pagination">#}
+{#        <button class="button">Previous</button>#}
+{#        <button class="button is-active">1</button>#}
+{#        <button class="button">2</button>#}
+{#        <button class="button">3</button>#}
+{#        <button class="button">4</button>#}
+{#        <button class="button">Next</button>#}
+{#    </div>#}
+    <!-- ------- -->
+
+    <article id="error-window" class="error-window">
+        <div class="error-window-header">
+            <p>Error</p>
+            <button class="close"></button>
+        </div>
+        <div id="error-window-body" class="error-window-body">
+        </div>
+    </article>
+{% endblock %}
