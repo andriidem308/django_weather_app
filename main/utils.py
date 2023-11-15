@@ -3,40 +3,12 @@ from datetime import datetime, timedelta
 
 import jmespath
 
-detailed_wind_direction = {
-    'N': 'North',
-    'NbE': 'North by East',
-    'NNE': 'North-Northeast',
-    'NEbN': 'Northeast by North',
-    'NE': 'Northeast',
-    'NEbE': 'Northeast by East',
-    'ENE': 'East-Northeast',
-    'EbN': 'East by North',
-    'E': 'East',
-    'EbS': 'East by South',
-    'ESE': 'East-Southeast',
-    'SEbE': 'Southeast by East',
-    'SE': 'Southeast',
-    'SEbS': 'Southeast by South',
-    'SSE': 'South-Southeast',
-    'SbE': 'South by East',
-    'S': 'South',
-    'SbW': 'South by West',
-    'SSW': 'South-Southwest',
-    'SWbS': 'Southwest by South',
-    'SW': 'Southwest',
-    'SWbW': 'Southwest by West',
-    'WSW': 'West-Southwest',
-    'WbS': 'West by South',
-    'W': 'West',
-    'WbN': 'West by North',
-    'WNW': 'West-Northwest',
-    'NWbW': 'Northwest by West',
-    'NW': 'Northwest',
-    'NWbN': 'Northwest by North',
-    'NNW': 'North-Northwest',
-    'NbW': 'North by West',
-}
+
+def str_to_date(str_date, date_format='%Y-%m-%d'):
+    result = str_date
+    if isinstance(str_date, str):
+        result = datetime.strptime(str_date, date_format).date()
+    return result
 
 
 class BadResponseException(Exception):
@@ -85,8 +57,8 @@ def validate_date_to(date_to):
 
 @error_check
 def check_dates_valid(str_date_1: str, str_date_2: str):
-    date_1 = datetime.strptime(str_date_1, '%Y-%m-%d')
-    date_2 = datetime.strptime(str_date_2, '%Y-%m-%d')
+    date_1 = str_to_date(str_date_1)
+    date_2 = str_to_date(str_date_2)
 
     condition = date_1 <= date_2
     message = 'dateTo cannot be earlier than dateFrom'
@@ -110,8 +82,8 @@ def check_external_response(external_response):
 def split_daterange(date_1_str, date_2_str):
     max_date_range = 30
 
-    date_1 = datetime.strptime(date_1_str, '%Y-%m-%d')
-    date_2 = datetime.strptime(date_2_str, '%Y-%m-%d')
+    date_1 = str_to_date(date_1_str)
+    date_2 = str_to_date(date_2_str)
 
     days_difference = (date_2 - date_1).days
 
@@ -126,3 +98,22 @@ def split_daterange(date_1_str, date_2_str):
         days_difference -= max_date_range
 
     return dateranges
+
+
+def get_day_weather_from_response(day_forecast):
+    day_weather_data = day_forecast.get('day')
+
+    day_weather = {
+        'day': day_forecast.get('date'),
+        'max_temp': day_weather_data.get('maxtemp_c'),
+        'min_temp': day_weather_data.get('mintemp_c'),
+        'avg_temp': day_weather_data.get('avgtemp_c'),
+        'humidity': day_weather_data.get('avghumidity'),
+        'sunrise': jmespath.search('astro.sunrise', day_forecast),
+        'sunset': jmespath.search('astro.sunset', day_forecast),
+    }
+
+    return day_weather
+
+
+

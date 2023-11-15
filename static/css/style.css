@@ -107,7 +107,28 @@ header {
     border: 3px solid var(--secondary-color);
 }
 
+.hidden {
+    display: none;
+}
 
+#pagination {
+    display: flex;
+    justify-content: space-between;
+}
+
+#pagination .button {
+    margin-right: 15px;
+}
+
+#pagination .button:last-child {
+    margin-right: 0;
+}
+
+#pagination .button span {
+    font-size: 16px;
+    color: var(--light-color);
+    font-weight: bold;
+}
 
 
 /*   --------------   ERROR WINDOW   --------------   */

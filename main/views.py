@@ -1,25 +1,15 @@
-from datetime import datetime
-from copy import deepcopy
-
 import jmespath
 import requests
-from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
 from rest_framework import viewsets
 
-# from main.models import WeatherData
-# from main.serializers import WeatherDataSerializer
-# from main.forms import WeatherForm
-# from main.utils import detailed_wind_direction, check_dates_valid, validate_date_to
+from django_weather_app.settings import WEATHER_API_KEY
+from main.serializers import WeatherDataSerializer
+from main.tasks import *
+from main.utils import BadResponseException, check_external_response, split_daterange, check_input_data, \
+    get_day_weather_from_response, validate_date_to, check_dates_valid
 
-
-from main.models import *
-from main.serializers import *
-from main.forms import *
-from main.utils import *
-
-
-API_KEY = '5f738ec388e84c2da51140026230911'
 weather_api_link = 'http://api.weatherapi.com/v1/history.json?key={api_key}&q={city}&dt={date_from}&end_dt={date_to}'
 
 
@@ -30,17 +20,6 @@ class WeatherDataViewSet(viewsets.ModelViewSet):
 
 def index(request):
     return render(request, 'index.html')
-
-
-def history(request):
-    return render(request, '_index.html')
-
-def get_request(request):
-    return HttpResponse('GET request received successfully!')
-
-
-def post_request(request):
-    return HttpResponse('POST request sent successfully!')
 
 
 def get_weather_data(request):
@@ -58,98 +37,37 @@ def get_weather_data(request):
         check_dates_valid(date_from, date_to)
 
         date_periods = split_daterange(date_from, date_to)
-        location_data = {}
         data['results'] = []
 
         for date_period in date_periods:
-            api_response = requests.get(weather_api_link.format(
-                api_key=API_KEY,
-                city=city,
-                date_from=date_period[0],
-                date_to=date_period[1]
-            ))
+            weather_data_list = WeatherData.get_weather_in_date_range(city, date_period[0], date_period[1])
+            if weather_data_list:
+                for weather_data in weather_data_list:
+                    data['results'].append(weather_data.to_json())
+            else:
+                curr_date_from = datetime.strftime(date_period[0], '%Y-%m-%d')
+                curr_date_to = datetime.strftime(date_period[1], '%Y-%m-%d')
 
-            print(weather_api_link.format(
-                api_key=API_KEY,
-                city=city,
-                date_from=date_period[0],
-                date_to=date_period[1]
-            ))
+                api_response = requests.get(weather_api_link.format(
+                    api_key=WEATHER_API_KEY,
+                    city=city,
+                    date_from=curr_date_from,
+                    date_to=curr_date_to
+                ))
 
-            check_external_response(api_response)
-            api_response_json = api_response.json()
-            location_data = api_response_json.get('location')
+                check_external_response(api_response)
+                api_response_json = api_response.json()
 
-            forecast_by_days = jmespath.search('forecast.forecastday', api_response_json) or []
-            for forecast_by_day in forecast_by_days:
-                day_date = forecast_by_day.get('date')
-                day_weather = forecast_by_day.get('day')
-                day_astro = forecast_by_day.get('astro')
+                forecast_by_days = jmespath.search('forecast.forecastday', api_response_json) or []
+                for forecast_by_day in forecast_by_days:
+                    day_weather = get_day_weather_from_response(forecast_by_day)
+                    data['results'].append(day_weather)
+                    if not WeatherData.objects.filter(city=city, day=day_weather.get('day')).exists():
+                        add_weather_data.delay(city, day_weather)
 
-                data['results'].append({
-                    'date': day_date,
-                    'max_temp': day_weather.get('maxtemp_c'),
-                    'min_temp': day_weather.get('mintemp_c'),
-                    'avg_temp': day_weather.get('avgtemp_c'),
-                    'max_wind_speed': day_weather.get('maxwind_kph'),
-                    'avg_humidity': day_weather.get('avghumidity'),
-                    'sunrise': day_astro.get('sunrise'),
-                    'sunset': day_astro.get('sunset'),
-                })
-
-        data['location'] = {
-            'city': location_data.get('name'),
-            'region': location_data.get('region'),
-            'country': location_data.get('country'),
-            'lat': location_data.get('lat'),
-            'lon': location_data.get('lon'),
-            'localtime': location_data.get('localtime'),
-        }
-
+        data['results'].sort(key=lambda x: str_to_date(x['day']), reverse=True)
         response = {'success': success, 'status': status, 'data': data}
     except BadResponseException as bre:
         response = bre.to_dict()
 
-    return JsonResponse(response, status=response['status'])
-
-
-def get_weather_data_test(request):
-    success = True
-    status = 200
-    data = {}
-
-    url = 'http://api.weatherapi.com/v1/history.json?key=5f738ec388e84c2da51140026230911&q=Kyiv&dt=2023-10-16 00:00:00&end_dt=2023-11-14 00:00:00'
-    response = requests.get(url)
-    response_json = response.json()
-    location_data = response_json.get('location')
-
-    data['results'] = []
-
-    forecast_by_days = jmespath.search('forecast.forecastday', response_json) or []
-    for forecast_by_day in forecast_by_days:
-        day_date = forecast_by_day.get('date')
-        day_weather = forecast_by_day.get('day')
-        day_astro = forecast_by_day.get('astro')
-
-        data['results'].append({
-            'date': day_date,
-            'max_temp': day_weather.get('maxtemp_c'),
-            'min_temp': day_weather.get('mintemp_c'),
-            'avg_temp': day_weather.get('avgtemp_c'),
-            'max_wind_speed': day_weather.get('maxwind_kph'),
-            'avg_humidity': day_weather.get('avghumidity'),
-            'sunrise': day_astro.get('sunrise'),
-            'sunset': day_astro.get('sunset'),
-        })
-
-    data['location'] = {
-        'city': location_data.get('name'),
-        'region': location_data.get('region'),
-        'country': location_data.get('country'),
-        'lat': location_data.get('lat'),
-        'lon': location_data.get('lon'),
-        'localtime': location_data.get('localtime'),
-    }
-
-    response = {'success': success, 'status': status, 'data': data}
     return JsonResponse(response, status=response['status'])

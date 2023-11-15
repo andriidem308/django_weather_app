@@ -1,5 +1,5 @@
 let currentPage = 1;
-const pageSize = 12;
+const pageSize = 30;
 
 document.getElementById('get-weather').onclick = () => {
     const weatherRequest = new XMLHttpRequest();
@@ -42,7 +42,7 @@ function addRow(tableBody, rowData) {
 
     // Create cells and fill them with data
     const dateCell = row.insertCell(0);
-    dateCell.textContent = rowData.date;
+    dateCell.textContent = rowData.day;
 
     const maxTempCell = row.insertCell(1);
     maxTempCell.textContent = rowData.max_temp;
@@ -54,7 +54,7 @@ function addRow(tableBody, rowData) {
     avgTempCell.textContent = rowData.avg_temp;
 
     const avgHumidityCell = row.insertCell(4);
-    avgHumidityCell.textContent = rowData.avg_humidity;
+    avgHumidityCell.textContent = rowData.humidity;
 
     const sunriseCell = row.insertCell(5);
     sunriseCell.textContent = rowData.sunrise;
@@ -72,55 +72,131 @@ function updatePagination(data) {
     // Clear existing pagination controls
     paginationElement.innerHTML = '';
 
-    // Add previous button
+    const leftButtons = document.createElement('div');
+
+    const firstButton = document.createElement('button');
+    const doubleArrowLeft = document.createElement('span');
+
+    doubleArrowLeft.classList.add('material-icons');
+    doubleArrowLeft.textContent = 'chevron_left';
+    firstButton.appendChild(doubleArrowLeft);
+    firstButton.classList.add('button');
+    firstButton.addEventListener('click', function () {
+        if (currentPage > 1) {
+            currentPage = 1;
+            updateWeatherTable(data);
+            highlightActivePage();
+            hideFarButtons();
+        }
+    });
+    leftButtons.appendChild(firstButton);
+
     const previousButton = document.createElement('button');
-    previousButton.textContent = 'Previous';
+    const arrowLeft = document.createElement('span');
+    arrowLeft.classList.add('material-icons');
+    arrowLeft.textContent = 'chevron_left';
+    previousButton.appendChild(arrowLeft);
     previousButton.classList.add('button');
     previousButton.addEventListener('click', function () {
         if (currentPage > 1) {
             currentPage--;
             updateWeatherTable(data);
             highlightActivePage();
+            hideFarButtons();
         }
     });
-    paginationElement.appendChild(previousButton);
+    leftButtons.appendChild(previousButton);
 
-    // Add page numbers
+    paginationElement.appendChild(leftButtons);
+
+    centerButtons = document.createElement('div');
+
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement('button');
+
         pageButton.textContent = i;
         pageButton.classList.add('button');
         pageButton.addEventListener('click', function () {
             currentPage = i;
             updateWeatherTable(data);
             highlightActivePage();
+            hideFarButtons();
         });
-        paginationElement.appendChild(pageButton);
+        centerButtons.appendChild(pageButton);
     }
 
-    // Add next button
+    paginationElement.appendChild(centerButtons);
+
+    const rightButtons = document.createElement('div');
+
     const nextButton = document.createElement('button');
-    nextButton.textContent = 'Next';
+    const arrowRight = document.createElement('span');
+    arrowRight.classList.add('material-icons');
+    arrowRight.textContent = 'chevron_right';
+    nextButton.appendChild(arrowRight);
     nextButton.classList.add('button');
     nextButton.addEventListener('click', function () {
         if (currentPage < totalPages) {
             currentPage++;
             updateWeatherTable(data);
             highlightActivePage();
+            hideFarButtons();
         }
     });
-    paginationElement.appendChild(nextButton);
+    rightButtons.appendChild(nextButton);
+
+    const lastButton = document.createElement('button');
+    const doubleArrowRight = document.createElement('span');
+    doubleArrowRight.classList.add('material-icons');
+    doubleArrowRight.textContent = 'keyboard_double_arrow_left';
+    lastButton.appendChild(doubleArrowRight);
+    lastButton.classList.add('button');
+    lastButton.addEventListener('click', function () {
+        if (currentPage < totalPages) {
+            currentPage = totalPages;
+            updateWeatherTable(data);
+            highlightActivePage();
+            hideFarButtons();
+        }
+    });
+    rightButtons.appendChild(lastButton);
+
+    paginationElement.appendChild(rightButtons);
 
     highlightActivePage();
+    hideFarButtons();
 }
 
 function highlightActivePage() {
     const paginationButtons = document.querySelectorAll('#pagination .button');
     paginationButtons.forEach((button, index) => {
-        if (index === currentPage) {
+        if (index - 1 === currentPage) {
             button.classList.add('is-active');
         } else {
             button.classList.remove('is-active');
         }
     });
+}
+
+function hideFarButtons() {
+
+    const paginationButtons = document.querySelectorAll('#pagination .button');
+    let buttonsN = paginationButtons.length;
+
+    paginationButtons.forEach((button, index) => {
+        if (index > 2 && index < buttonsN - 3) {
+            if (index < currentPage - 3 || index > currentPage + 3) {
+                button.classList.add('hidden');
+            } else {
+                button.classList.remove('hidden');
+            }
+
+            if (index === currentPage - 3 || index === currentPage + 3) {
+                button.textContent = '...';
+            } else {
+                button.textContent = index.toString();
+            }
+        }
+    });
+
 }
