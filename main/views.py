@@ -1,14 +1,17 @@
+from datetime import datetime
+
 import jmespath
 import requests
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 
 from django_weather_app.settings import WEATHER_API_KEY
+from main.models import WeatherData
 from main.serializers import WeatherDataSerializer
-from main.tasks import *
+from main.tasks import add_weather_data
 from main.utils import BadResponseException, check_external_response, split_daterange, check_input_data, \
-    get_day_weather_from_response, validate_date_to, check_dates_valid
+    get_day_weather_from_response, validate_date_to, check_dates_valid, str_to_date
 
 weather_api_link = 'http://api.weatherapi.com/v1/history.json?key={api_key}&q={city}&dt={date_from}&end_dt={date_to}'
 
@@ -16,6 +19,24 @@ weather_api_link = 'http://api.weatherapi.com/v1/history.json?key={api_key}&q={c
 class WeatherDataViewSet(viewsets.ModelViewSet):
     queryset = WeatherData.objects.all()
     serializer_class = WeatherDataSerializer
+
+    def get_queryset(self):
+        city_param = self.request.query_params.get('city', None)
+        date_from_param = self.request.query_params.get('date_from', None)
+        date_to_param = self.request.query_params.get('date_to', None)
+
+        queryset = WeatherData.objects.all()
+
+        if city_param:
+            queryset = queryset.filter(city=city_param)
+
+        if date_from_param:
+            queryset = queryset.filter(day__gte=date_from_param)
+
+        if date_to_param:
+            queryset = queryset.filter(day__lte=date_to_param)
+
+        return queryset
 
 
 def index(request):

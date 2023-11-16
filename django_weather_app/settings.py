@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     'main.apps.MainConfig',
 
+    'rest_framework',
     'sass_processor',
     'celery',
 ]
