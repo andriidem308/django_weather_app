@@ -5,7 +5,6 @@
   box-sizing: border-box;
   text-decoration: none;
   list-style: none;
-  font-family: 'Inter', sans-serif;
 }
 /*   --------------   --------------   --------------   */
 
@@ -22,12 +21,13 @@ $error-dense-color: #f5a5a5;
 $nav-height: 60px;
 /*   --------------   --------------   --------------   */
 
-
+/*   --------------  MAIN   --------------   */
 body {
   background-color: $light-color;
 
   * {
     color: $dark-color;
+    font-family: 'Inter', sans-serif;
   }
 }
 
@@ -151,7 +151,7 @@ header {
     }
   }
 }
-
+/*   --------------   --------------   --------------   */
 
 /*   --------------   ERROR WINDOW   --------------   */
 .error-window {
@@ -229,11 +229,9 @@ header {
     transform: rotate(-45deg);
   }
 }
-
 /*   --------------   --------------   --------------   */
 
 /*   --------------   TABLE   --------------   */
-
 #weather-result-table {
   display: none;
 }
@@ -244,6 +242,10 @@ table {
   margin: 30px 0;
   font-family: Arial, sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+  thead tr {
+    border-radius: 10px;
+  }
 
   th, td {
     padding: 10px;
@@ -272,5 +274,4 @@ table {
     }
   }
 }
-
 /*   --------------   --------------   --------------   */
