@@ -1,11 +1,11 @@
-{#{% load sass_tags %}#}
+{% load sass_tags %}
 {% load static %}
 <!doctype html>
 <html lang="en">
 <head>
     {#  ******************** TITLE & FAVICON ******************** #}
     <title>{% block title %}{% endblock %}</title>
-<!--    <link rel="icon" href="{% static 'img/favicon/favicon.ico' %}">-->
+    <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}">
 
     {#  ******************** META ******************** #}
     <meta charset="UTF-8">
@@ -21,8 +21,7 @@
 
     {#  ******************** LOCAL STYLES ******************** #}
 
-    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
-{#    <link href="{% sass_src 'css/style.scss' %}" rel="stylesheet" type="text/css">#}
+    <link href="{% sass_src 'css/style.scss' %}" rel="stylesheet" type="text/css">
 </head>
 <body>
 <header>

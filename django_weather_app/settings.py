@@ -123,16 +123,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-# STATICFILES_FINDERS = [
-#     'django.contrib.staticfiles.finders.FileSystemFinder',
-#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#     'sass_processor.finders.CssFinder',
-# ]
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
+]
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-# SASS_PROCESSOR_ROOT = STATIC_ROOT
+SASS_PROCESSOR_ROOT = STATIC_ROOT
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -141,12 +141,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Celery
 
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
-# CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672'.format(
-#     os.environ.get('RABBITMQ_DEFAULT_USER', "guest"),
-#     os.environ.get('RABBITMQ_DEFAULT_PASS', "guest"),
-#     os.environ.get('RABBITMQ_DEFAULT_HOST', "localhost"),
-# )
+CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672'.format(
+    os.getenv('RABBITMQ_DEFAULT_USER', "guest"),
+    os.getenv('RABBITMQ_DEFAULT_PASS', "guest"),
+    os.getenv('RABBITMQ_DEFAULT_HOST', "localhost"),
+)
 
 CELERY_TIMEZONE = 'Europe/Kiev'
 CELERY_TASK_TRACK_STARTED = True
