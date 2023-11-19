@@ -1,11 +1,11 @@
 import json
-import requests.exceptions
 from datetime import datetime, timedelta
 
 import jmespath
+import requests.exceptions
 
 
-def str_to_date(str_date, date_format='%Y-%m-%d'):
+def str_to_date(str_date: str, date_format='%Y-%m-%d'):
     result = str_date
     if isinstance(str_date, str):
         result = datetime.strptime(str_date, date_format).date()
@@ -38,6 +38,7 @@ def error_check(func):
         if not condition:
             raise BadResponseException(message=message, status_code=status_code)
         return
+
     return wrapper
 
 
@@ -117,6 +118,3 @@ def get_day_weather_from_response(day_forecast):
     }
 
     return day_weather
-
-
-

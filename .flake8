@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 120
+exclude = ven310,,main/__init__,migrations,__init__.py
+application-import-names=app
+import-order-style=google
+max-complexity = 10
+#ignore=D100
+ignore=Q000, F841
+inline-quotes="

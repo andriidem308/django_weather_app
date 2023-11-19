@@ -1,7 +1,7 @@
 # Django Weather App
 
 
-## How to launch?
+## How to launch locally?
 
 ### 1. Clone this repository
 using SSH:
@@ -63,3 +63,13 @@ Run Celery Worker:
 ```make run```
 
 Then go to http://127.0.0.1:8000/ and do whatever you want :)
+
+
+## How to deploy an app to a docker container?
+
+### Run a command:
+```make docker-run```
+
+or 
+
+```docker-compose up --build -d```
