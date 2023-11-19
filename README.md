@@ -1,5 +1,21 @@
 # Django Weather App
 
+## Before start
+### Please create a new .env file inside a project and fill it like this:
+
+```
+SECRET_KEY='your_django_secret_key'
+WEATHER_API_KEY='weather_api_key'
+DEBUG=False
+RABBITMQ_DEFAULT_USER='guest'
+RABBITMQ_DEFAULT_PASS='guest'
+RABBITMQ_DEFAULT_HOST='rabbitmq'
+```
+
+Where ```weather_api_key``` you can get from your account settings on https://www.weatherapi.com/my/
+
+### Make sure that you have Python 3.10, Celery, RabbitMQ and Docker installed
+
 
 ## How to launch locally?
 
