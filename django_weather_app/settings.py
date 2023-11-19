@@ -146,7 +146,6 @@ CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672'.format(
     os.getenv('RABBITMQ_DEFAULT_PASS', "guest"),
     os.getenv('RABBITMQ_DEFAULT_HOST', "localhost"),
 )
-CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL')
 
 CELERY_TIMEZONE = 'Europe/Kiev'
 CELERY_TASK_TRACK_STARTED = True
