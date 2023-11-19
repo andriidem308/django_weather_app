@@ -5,7 +5,7 @@ import jmespath
 import requests.exceptions
 
 
-def str_to_date(str_date: str, date_format='%Y-%m-%d'):
+def str_to_date(str_date: str, date_format: str = '%Y-%m-%d') -> datetime.date:
     result = str_date
     if isinstance(str_date, str):
         result = datetime.strptime(str_date, date_format).date()
@@ -13,20 +13,20 @@ def str_to_date(str_date: str, date_format='%Y-%m-%d'):
 
 
 class BadResponseException(Exception):
-    def __init__(self, message, status_code=400):
+    def __init__(self, message: str, status_code: int = 400):
         self.message = message
         self.status_code = status_code
         super().__init__(message)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         return {
             'success': False,
             'message': self.message,
             'status': self.status_code,
         }
 
-    def to_json(self):
-        json.dumps(self.to_dict())
+    def to_json(self) -> str:
+        return json.dumps(self.to_dict())
 
     def __str__(self):
         return self.to_json()
@@ -43,14 +43,14 @@ def error_check(func):
 
 
 @error_check
-def check_input_data(city, date_from):
+def check_input_data(city: str, date_from: str):
     condition = city and date_from
     message = 'city or/and dateFrom are not provided!'
     status_code = 400
     return condition, message, status_code
 
 
-def validate_date_to(date_to):
+def validate_date_to(date_to: str):
     if not date_to:
         current_datetime = datetime.now()
         date_to = current_datetime.strftime('%Y-%m-%d')
@@ -58,7 +58,7 @@ def validate_date_to(date_to):
 
 
 @error_check
-def check_dates_valid(str_date_1: str, str_date_2: str):
+def check_dates_valid(str_date_1: str, str_date_2: str) -> tuple[bool, str, int]:
     date_1 = str_to_date(str_date_1)
     date_2 = str_to_date(str_date_2)
 
@@ -70,7 +70,7 @@ def check_dates_valid(str_date_1: str, str_date_2: str):
 
 
 @error_check
-def check_external_response(external_response):
+def check_external_response(external_response: requests.Response) -> tuple[bool, str, int]:
     external_status_code = external_response.status_code
     try:
         external_response_json = external_response.json()
@@ -83,7 +83,7 @@ def check_external_response(external_response):
     return condition, message, status_code
 
 
-def split_daterange(date_1_str, date_2_str):
+def split_daterange(date_1_str: str, date_2_str: str) -> list[tuple[datetime.date, datetime.date]]:
     max_date_range = 30
 
     date_1 = str_to_date(date_1_str)
@@ -104,7 +104,7 @@ def split_daterange(date_1_str, date_2_str):
     return dateranges
 
 
-def get_day_weather_from_response(day_forecast):
+def get_day_weather_from_response(day_forecast: dict) -> dict:
     day_weather_data = day_forecast.get('day')
 
     day_weather = {

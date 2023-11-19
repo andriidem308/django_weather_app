@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-WEATHER_API_KEY = os.environ.get('WEATHER_API_KEY')
+WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG')
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -145,9 +145,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Celery
 
 CELERY_BROKER_URL = 'amqp://{0}:{1}@{2}:5672'.format(
-    os.environ.get('RABBITMQ_DEFAULT_USER', "guest"),
-    os.environ.get('RABBITMQ_DEFAULT_PASS', "guest"),
-    os.environ.get('RABBITMQ_DEFAULT_HOST', "localhost"),
+    os.getenv('RABBITMQ_DEFAULT_USER', "guest"),
+    os.getenv('RABBITMQ_DEFAULT_PASS', "guest"),
+    os.getenv('RABBITMQ_DEFAULT_HOST', "localhost"),
 )
 
 CELERY_TIMEZONE = 'Europe/Kiev'
