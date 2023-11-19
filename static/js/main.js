@@ -9,8 +9,10 @@ document.getElementById('get-weather').onclick = () => {
         const responseData = JSON.parse(this.responseText);
 
         if (this.status === 200) {
-            document.getElementById('weather-result-table').style.display = 'table';
+            const weatherTable = document.getElementById('weather-result-table');
+            weatherTable.classList.remove('hidden');
             updateWeatherTable(responseData);
+            updateWeatherCards(responseData);
             updatePagination(responseData);
         } else {
             errorWindowMessages = document.querySelectorAll('#error-window-body p');
@@ -66,7 +68,18 @@ function updateWeatherTable(data) {
     data.data.results.slice(startIndex, endIndex).forEach(function (result) {
         addRow(tableBody, result);
     });
+}
 
+function updateWeatherCards(data) {
+    const cardsBody = document.getElementById('weather-result-cards');
+    cardsBody.innerHTML = '';
+
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+
+    data.data.results.slice(startIndex, endIndex).forEach(function (result) {
+        addCard(cardsBody, result);
+    });
 }
 
 function addRow(tableBody, rowData) {
@@ -76,22 +89,91 @@ function addRow(tableBody, rowData) {
     dateCell.textContent = rowData.day;
 
     const maxTempCell = row.insertCell(1);
-    maxTempCell.textContent = rowData.max_temp;
+    maxTempCell.textContent = rowData.max_temp + '°C';
 
     const minTempCell = row.insertCell(2);
-    minTempCell.textContent = rowData.min_temp;
+    minTempCell.textContent = rowData.min_temp + '°C';
 
     const avgTempCell = row.insertCell(3);
-    avgTempCell.textContent = rowData.avg_temp;
+    avgTempCell.textContent = rowData.avg_temp + '°C';
 
     const avgHumidityCell = row.insertCell(4);
-    avgHumidityCell.textContent = rowData.humidity;
+    avgHumidityCell.textContent = rowData.humidity + '%';
 
     const sunriseCell = row.insertCell(5);
     sunriseCell.textContent = rowData.sunrise;
 
     const sunsetCell = row.insertCell(6);
     sunsetCell.textContent = rowData.sunset;
+}
+
+function addCard(cardsBody, cardData) {
+    const card = document.createElement('div');
+    card.classList.add('card');
+
+    const cardDate = document.createElement('h1');
+    cardDate.textContent = cardData.day;
+    card.appendChild(cardDate);
+
+    const cardInfo = document.createElement('div');
+    cardInfo.classList.add('card-info');
+
+    const cardMaxTempLabel = document.createElement('p');
+    cardMaxTempLabel.classList.add('card-label');
+    cardMaxTempLabel.textContent = 'Maximum temperature: ';
+    const cardMaxTempValue = document.createElement('span');
+    cardMaxTempValue.classList.add('card-value');
+    cardMaxTempValue.textContent = cardData.max_temp + '°C';
+    cardMaxTempLabel.appendChild(cardMaxTempValue);
+    cardInfo.appendChild(cardMaxTempLabel);
+
+    const cardMinTempLabel = document.createElement('p');
+    cardMinTempLabel.classList.add('card-label');
+    cardMinTempLabel.textContent = 'Minimum temperature: ';
+    const cardMinTempValue = document.createElement('span');
+    cardMinTempValue.classList.add('card-value');
+    cardMinTempValue.textContent = cardData.min_temp + '°C';
+    cardMinTempLabel.appendChild(cardMinTempValue);
+    cardInfo.appendChild(cardMinTempLabel);
+
+    const cardAvgTempLabel = document.createElement('p');
+    cardAvgTempLabel.classList.add('card-label');
+    cardAvgTempLabel.textContent = 'Average temperature: ';
+    const cardAvgTempValue = document.createElement('span');
+    cardAvgTempValue.classList.add('card-value');
+    cardAvgTempValue.textContent = cardData.avg_temp + '°C';
+    cardAvgTempLabel.appendChild(cardAvgTempValue);
+    cardInfo.appendChild(cardAvgTempLabel);
+
+    const cardHumidityLabel = document.createElement('p');
+    cardHumidityLabel.classList.add('card-label');
+    cardHumidityLabel.textContent = 'Humidity: ';
+    const cardHumidityValue = document.createElement('span');
+    cardHumidityValue.classList.add('card-value');
+    cardHumidityValue.textContent = cardData.humidity + '%';
+    cardHumidityLabel.appendChild(cardHumidityValue);
+    cardInfo.appendChild(cardHumidityLabel);
+
+    const cardSunriseLabel = document.createElement('p');
+    cardSunriseLabel.classList.add('card-label');
+    cardSunriseLabel.textContent = 'Sunrise: ';
+    const cardSunriseValue = document.createElement('span');
+    cardSunriseValue.classList.add('card-value');
+    cardSunriseValue.textContent = cardData.sunrise;
+    cardSunriseLabel.appendChild(cardSunriseValue);
+    cardInfo.appendChild(cardSunriseLabel);
+
+    const cardSunsetLabel = document.createElement('p');
+    cardSunsetLabel.classList.add('card-label');
+    cardSunsetLabel.textContent = 'Sunset: ';
+    const cardSunsetValue = document.createElement('span');
+    cardSunsetValue.classList.add('card-value');
+    cardSunsetValue.textContent = cardData.sunset;
+    cardSunsetLabel.appendChild(cardSunsetValue);
+    cardInfo.appendChild(cardSunsetLabel);
+
+    card.appendChild(cardInfo);
+    cardsBody.appendChild(card);
 }
 
 function updatePagination(data) {
@@ -241,6 +323,8 @@ function closeErrorWindow() {
     });
 }
 
+
+
 document.getElementById('close-error-window').addEventListener('click', closeErrorWindow);
 
 var inputCity = document.getElementById('input-city');
@@ -258,3 +342,4 @@ inputDateFrom.addEventListener('focus', function () {
 inputDateTo.addEventListener('focus', function () {
     inputDateTo.classList.remove('error');
 });
+

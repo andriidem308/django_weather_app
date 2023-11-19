@@ -3,27 +3,29 @@
 {% block title %}Weather App{% endblock %}
 
 {% block content %}
-    <h1>Find information about weather</h1>
 
-    <div class="input-section">
-        <label for="input-city">City:</label>
-        <input type="text" id="input-city">
-        <label for="input-date-from">Date from:</label>
-        <input type="date" id="input-date-from">
-        <label for="input-date-to">Date to:</label>
-        <input type="date" id="input-date-to">
+    <div class="find-weather">
+        <h1>Find information about weather</h1>
+        <div class="input-section">
+            <label for="input-city">City:</label>
+            <input type="text" id="input-city">
+            <label for="input-date-from">Date from:</label>
+            <input type="date" id="input-date-from">
+            <label for="input-date-to">Date to:</label>
+            <input type="date" id="input-date-to">
+        </div>
+        <button class="button" id="get-weather">Get Weather</button>
     </div>
 
-    <button class="button" id="get-weather">Get Weather</button>
 
-    <table id="weather-result-table">
+    <table class="hidden" id="weather-result-table">
         <thead>
         <tr>
             <th>Day</th>
-            <th>Max Temperature</th>
-            <th>Min Temperature</th>
-            <th>Avg Temperature</th>
-            <th>Avg Humidity</th>
+            <th>Maximum Temperature</th>
+            <th>Minimum Temperature</th>
+            <th>Average Temperature</th>
+            <th>Humidity</th>
             <th>Sunrise</th>
             <th>Sunset</th>
         </tr>
@@ -32,6 +34,8 @@
 
         </tbody>
     </table>
+    <section class="card-section" id="weather-result-cards">
+    </section>
     <div id="pagination"></div>
 
     <article id="error-window" class="error-window">

@@ -1,4 +1,5 @@
 import json
+import requests.exceptions
 from datetime import datetime, timedelta
 
 import jmespath
@@ -70,8 +71,10 @@ def check_dates_valid(str_date_1: str, str_date_2: str):
 @error_check
 def check_external_response(external_response):
     external_status_code = external_response.status_code
-    external_response_json = external_response.json()
-
+    try:
+        external_response_json = external_response.json()
+    except requests.exceptions.JSONDecodeError as json_error:
+        external_response_json = {}
     condition = external_status_code == 200
     message = jmespath.search('error.message', external_response_json) or 'Bad external response!'
     status_code = external_status_code
@@ -89,7 +92,7 @@ def split_daterange(date_1_str, date_2_str):
 
     dateranges = []
     end_date = date_2
-    while days_difference > 0:
+    while days_difference >= 0:
         start_date = end_date - timedelta(max_date_range - 1)
         start_date = max(start_date, date_1)
         dateranges.append((start_date, end_date))
