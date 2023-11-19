@@ -1,4 +1,4 @@
-{% load sass_tags %}
+{#{% load sass_tags %}#}
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -21,7 +21,8 @@
 
     {#  ******************** LOCAL STYLES ******************** #}
 
-    <link href="{% sass_src 'css/style.scss' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css">
+{#    <link href="{% sass_src 'css/style.scss' %}" rel="stylesheet" type="text/css">#}
 </head>
 <body>
 <header>
