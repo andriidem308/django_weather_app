@@ -5,7 +5,6 @@ services:
     build: ./nginx
     volumes:
       - static:/static
-      - /:/app
     ports:
       - "80:80"
     depends_on:
