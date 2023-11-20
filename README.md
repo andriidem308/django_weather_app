@@ -89,3 +89,5 @@ Then go to http://127.0.0.1:8000/ and do whatever you want :)
 or 
 
 ```docker-compose up --build -d```
+
+go to 80:80 or localhost to view a result
